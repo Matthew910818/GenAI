@@ -25,7 +25,7 @@ class MyHomePage extends StatelessWidget {
         title: Text(
           'Game',
           style: TextStyle(
-            fontFamily: 'Roboto',
+            // fontFamily: 'Roboto',
             fontSize: 35,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -74,7 +74,7 @@ class MyHomePage extends StatelessWidget {
           Text(
             'Summary',
             style: TextStyle(
-              fontFamily: 'Roboto',
+              // fontFamily: 'Roboto',
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -84,7 +84,7 @@ class MyHomePage extends StatelessWidget {
           Text(
             viewModel.video.summary,
             style: TextStyle(
-              fontFamily: 'Roboto',
+              // fontFamily: 'Roboto',
               fontSize: 16,
               color: Colors.white70,
             ),
@@ -106,7 +106,7 @@ class MyHomePage extends StatelessWidget {
               Text(
                 'Highlights',
                 style: TextStyle(
-                  fontFamily: 'Roboto',
+                  // fontFamily: 'Roboto',
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -152,7 +152,7 @@ class MyHomePage extends StatelessWidget {
               Text(
                 'Related Videos',
                 style: TextStyle(
-                  fontFamily: 'Roboto',
+                  // fontFamily: 'Roboto',
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -207,7 +207,7 @@ class MyHomePage extends StatelessWidget {
         title: Text(
           video.title,
           style: TextStyle(
-            fontFamily: 'Roboto',
+            // fontFamily: 'Roboto',
             fontSize: 16,
             color: Colors.white,
           ),
@@ -217,7 +217,7 @@ class MyHomePage extends StatelessWidget {
         subtitle: Text(
           video.duration,
           style: TextStyle(
-            fontFamily: 'Roboto',
+            // fontFamily: 'Roboto',
             fontSize: 14,
             color: Colors.white54,
           ),

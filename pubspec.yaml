@@ -54,14 +54,14 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-  fonts:
-      - family: Roboto
-        fonts:
-          - asset: fonts/Roboto-Regular.ttf
-          - asset: fonts/Roboto-Bold.ttf
-            weight: 700
-          - asset: fonts/Roboto-Italic.ttf
-            style: italic
+  # fonts:
+  #     - family: Roboto
+  #       fonts:
+  #         - asset: fonts/Roboto-Regular.ttf
+  #         - asset: fonts/Roboto-Bold.ttf
+  #           weight: 700
+  #         - asset: fonts/Roboto-Italic.ttf
+  #           style: italic
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -74,6 +74,9 @@ flutter:
      - assets/crossover.png
      - assets/last.jpeg
      - assets/Finals.mp4
+    #  - assets/fonts/Roboto-Bold.ttf
+    #  - assets/fonts/Roboto-Italic.ttf
+    #  - assets/fonts/Roboto-Regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

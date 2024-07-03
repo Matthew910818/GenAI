@@ -1,191 +1,237 @@
+// my_home_page.dart
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import '../viewmodel/viewmodel.dart';
-import 'highlight1.dart';
-import 'highlight2.dart';
-import 'highlight3.dart';
+import '../viewmodel/video_vm.dart';
+import '../model/video.dart';
+import 'highlight.dart';
+import '../view/video_player.dart';
 
 class MyHomePage extends StatelessWidget {
-  final viewModel = MyViewModel();
+  final viewModel = VideoViewModel();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 35, 30, 30), // Background color matching the provided image
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 35, 30, 30),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            // Handle back button press
+          },
+        ),
+        centerTitle: true,
+        title: Text(
+          'Game',
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 35,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              color: Colors.black,
-              child: Center(
-                child: Text(
-                  '觀看賽事',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            // 使用 Container 設置影片視窗大小
-            Container(
-              width: MediaQuery.of(context).size.width, // 設置寬度為屏幕寬度
-              height: 300, // 設置合理的高度
-              child: VideoPlayerWidget(videoPath: 'assets/Finals.mp4'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '影片摘要',
-                style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                viewModel.videoSummary,
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '影片精華',
-                style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-            Column(
-              children: [
-                // Button1
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FirstHighlightPage()),
-                    );
-                  },
-                  child: buildButton(viewModel.videoHighlights[0]),
-                ),
-                SizedBox(height: 10),
-                // Button2
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SecondHighlightPage()),
-                    );
-                  },
-                  child: buildButton(viewModel.videoHighlights[1]),
-                ),
-                SizedBox(height: 10),
-                // Button3
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ThirdHighlightPage()),
-                    );
-                  },
-                  child: buildButton(viewModel.videoHighlights[2]),
-                ),
-              ],
-            ),
+            _buildVideoPlayerSection(),
+            _buildVideoSummarySection(),
+            _buildVideoHighlightsSection(context),
+            _buildSimilarVideosSection(context),
           ],
         ),
       ),
-      backgroundColor: Colors.black,
     );
   }
 
-  Widget buildButton(VideoHighlight highlight) {
+  Widget _buildVideoPlayerSection() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.all(16.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Color.fromRGBO(197, 208, 195, 0.3),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black54,
+              blurRadius: 10,
+              offset: Offset(0, 5),
+            ),
+          ],
         ),
-        child: ListTile(
-          leading: Image.asset(highlight.imagePath),
-          title: Text(
-            highlight.title,
-            style: TextStyle(color: Colors.white),
-          ),
-          subtitle: Text(
-            highlight.duration,
-            style: TextStyle(color: Colors.white),
-          ),
-          trailing: Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 1, 49, 5).withOpacity(1), 
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Icon(Icons.play_arrow, color: Color.fromARGB(255, 92, 227, 96)),
-            ],
-          ),
-          tileColor: Colors.transparent,
-        ),
+        child: VideoPlayerWidget(videoPath: viewModel.video.videoPath),
       ),
     );
   }
-}
 
-class VideoPlayerWidget extends StatefulWidget {
-  final String videoPath;
-
-  VideoPlayerWidget({required this.videoPath});
-
-  @override
-  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _controller;
-  bool _isInitialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.asset(widget.videoPath)
-      ..initialize().then((_) {
-        setState(() {
-          _isInitialized = true;
-        });
-      });
+  Widget _buildVideoSummarySection() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Summary',
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            viewModel.video.summary,
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 16,
+              color: Colors.white70,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Widget _buildVideoHighlightsSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Highlights',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+             
+            ],
+          ),
+          SizedBox(height: 10),
+          Container(
+            height: 180,
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: viewModel.videoHighlights.length,
+              itemBuilder: (context, index) {
+                final highlight = viewModel.videoHighlights[index];
+                return GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => HighlightModal(highlight: highlight),
+                    );
+                  },
+                  child: _buildHighlightCard(highlight),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return _isInitialized
-        ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          )
-        : Center(
-            child: CircularProgressIndicator(), // 顯示加載動畫
-          );
+  Widget _buildSimilarVideosSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Related Videos',
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              
+            ],
+          ),
+          SizedBox(height: 10),
+          Container(
+            height: 180,
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: viewModel.similarVideos.length,
+              itemBuilder: (context, index) {
+                final video = viewModel.similarVideos[index];
+                return GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => HighlightModal(highlight: video),
+                    );
+                  },
+                  child: _buildHighlightCard(video),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHighlightCard(Video video) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: Color(0xFF2C2F33), // Dark background color for the cards
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListTile(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.asset(
+            video.imagePath,
+            width: 50,
+            height: 50,
+            fit: BoxFit.cover,
+          ),
+        ),
+        title: Text(
+          video.title,
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 16,
+            color: Colors.white,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(
+          video.duration,
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 14,
+            color: Colors.white54,
+          ),
+        ),
+        trailing: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.green,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(Icons.play_arrow, color: Colors.white),
+        ),
+      ),
+    );
   }
 }

@@ -29,7 +29,12 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            VideoPlayerWidget(videoPath: 'assets/Finals.mp4'),
+            // 使用 Container 設置影片視窗大小
+            Container(
+              width: MediaQuery.of(context).size.width, // 設置寬度為屏幕寬度
+              height: 300, // 設置合理的高度
+              child: VideoPlayerWidget(videoPath: 'assets/Finals.mp4'),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -179,6 +184,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             aspectRatio: _controller.value.aspectRatio,
             child: VideoPlayer(_controller),
           )
-        : Container(); // 或者顯示加載動畫或佔位符
+        : Center(
+            child: CircularProgressIndicator(), // 顯示加載動畫
+          );
   }
 }

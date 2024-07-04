@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:genai_v2/view/homepage.dart';
-import 'package:video_player/video_player.dart';
 import '../viewmodel/video_vm.dart';
 import '../model/video.dart';
-import 'highlight.dart';
 import '../view/video_player.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,7 +14,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final viewModel = VideoViewModel();
   bool isLoading = true;
-  late List<VideoPlayerController> _controllers;
+  int _current = 0;
+  List<String> videoPaths = [];
+  late List<VideoPlayerWidget> _videoWidgets;
 
   @override
   void initState() {
@@ -26,23 +26,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadData() async {
     await viewModel.loadVideos();
-    _controllers = viewModel.videoHighlights
-        .map((video) => VideoPlayerController.network(video.videoPath))
-        .toList();
-    for (var controller in _controllers) {
-      await controller.initialize();
-    }
     setState(() {
+      videoPaths = viewModel.videoHighlights.map((video) => video.videoPath).toList();
+      _videoWidgets = videoPaths.map((path) => VideoPlayerWidget(videoPath: path)).toList();
       isLoading = false;
     });
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    super.dispose();
   }
 
   @override
@@ -56,7 +44,6 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           '愛爾達',
           style: TextStyle(
-            // fontFamily: 'Roboto',
             fontSize: 35,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -70,23 +57,34 @@ class _HomePageState extends State<HomePage> {
               : SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      CarouselSlider(
+                      CarouselSlider.builder(
+                        itemCount: _videoWidgets.length,
                         options: CarouselOptions(
-                          autoPlay: true,
+                          autoPlay: false,
                           aspectRatio: 2.0,
                           enlargeCenterPage: true,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _current = index;
+                            });
+                          },
                         ),
-                        items: _controllers.map((controller) {
+                        itemBuilder: (context, index, realIndex) {
                           return Container(
                             width: constraints.maxWidth,
                             child: Center(
                               child: AspectRatio(
-                                aspectRatio: controller.value.aspectRatio,
-                                child: VideoPlayer(controller),
+                                aspectRatio: 16 / 9,
+                                child: index == _current
+                                    ? _videoWidgets[index]
+                                    : Image.asset(
+                                        'assets/crossover.png', // Add a placeholder image
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                           );
-                        }).toList(),
+                        },
                       ),
                       SizedBox(height: 20),
                       _buildRecommendedVideoSection(constraints),
@@ -120,20 +118,48 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 10),
           Container(
             height: 600,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
+            child: GridView.builder(
+              padding: EdgeInsets.zero,
               itemCount: viewModel.recommendedVideos.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+              ),
               itemBuilder: (context, index) {
                 final video = viewModel.recommendedVideos[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) =>  MyHomePage()),
+                      MaterialPageRoute(builder: (context) => MyHomePage()),
                     );
                   },
-                  child: _buildRecommendCard(video),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.asset(
+                          video.imagePath,
+                          width: double.infinity,
+                          height: 400,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        video.title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
@@ -165,7 +191,6 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           video.title,
           style: TextStyle(
-            // fontFamily: 'Roboto',
             fontSize: 20,
             color: Colors.white,
           ),

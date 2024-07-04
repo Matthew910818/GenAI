@@ -7,11 +7,20 @@ class VideoViewModel {
   late Video video;
   late List<Video> videoHighlights;
   late List<Video> similarVideos;
+  late List<Video> recommendedVideos;
 
   VideoViewModel() {
     _loadVideo();
     _loadVideoHighlights();
     _loadSimilarVideos();
+    _loadRecommendedVideos();
+  }
+
+  Future<void> loadVideos() async {
+    video = await _repository.fetchVideo();
+    videoHighlights = await _repository.fetchVideoHighlights();
+    similarVideos = await _repository.fetchSimilarVideos();
+    recommendedVideos = await _repository.fetchRecommendedVideos();
   }
 
   void _loadVideo() {
@@ -25,4 +34,9 @@ class VideoViewModel {
   void _loadSimilarVideos() {
     similarVideos = _repository.fetchSimilarVideos();
   }
+
+  void _loadRecommendedVideos() {
+    similarVideos = _repository.fetchRecommendedVideos();
+  }
+
 }

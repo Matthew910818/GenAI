@@ -6,12 +6,13 @@ import 'highlight.dart';
 import '../view/video_player.dart';
 
 class MyHomePage extends StatelessWidget {
+  MyHomePage({super.key});
   final viewModel = VideoViewModel();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 35, 30, 30), // Background color matching the provided image
+      backgroundColor: Color.fromARGB(255, 35, 30, 30),
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 35, 30, 30),
         elevation: 0,
@@ -19,6 +20,9 @@ class MyHomePage extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             // Handle back button press
+            onTap: () {
+              Navigator.pop(context);
+            };
           },
         ),
         centerTitle: true,

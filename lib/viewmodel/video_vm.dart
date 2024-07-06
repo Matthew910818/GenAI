@@ -8,12 +8,18 @@ class VideoViewModel {
   late List<Video> videoHighlights;
   late List<Video> similarVideos;
   late List<Video> recommendedVideos;
+  late List<Video> allVideos ; 
 
   VideoViewModel() {
     _loadVideo();
+    _loadAllVideos();
     _loadVideoHighlights();
     _loadSimilarVideos();
     _loadRecommendedVideos();
+  }
+
+  Future<void> _loadAllVideos() async {
+    allVideos = await _repository.parseVideos("assets/channel_videos.json");
   }
 
   Future<void> loadVideos() async {

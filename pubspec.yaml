@@ -43,6 +43,8 @@ dependencies:
   http: ^0.13.3
   visibility_detector: ^0.4.0+2
   font_awesome_flutter: ^10.7.0
+  flutter_native_splash: ^2.0.5+1
+
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +88,7 @@ flutter:
      - assets/last.jpeg
      - assets/football.mp4
      - assets/track_stubs.json
+     - assets/channel_videos.json
 
     #  - assets/fonts/Roboto-Bold.ttf
     #  - assets/fonts/Roboto-Italic.ttf

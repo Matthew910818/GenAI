@@ -5,6 +5,7 @@ import '../viewmodel/video_vm.dart';
 import '../model/video.dart';
 import 'highlight.dart';
 import '../view/video_player.dart';
+import '../view/video_summary.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -51,7 +52,7 @@ class MyHomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Gelaito4',
+            '                Gelaito4',
             style: TextStyle(
               fontFamily: 'Pacifico', // Replace with your font family
               fontSize: 24, // Adjust the size as needed
@@ -114,78 +115,76 @@ class MyHomePage extends StatelessWidget {
   }
 
   Widget _buildVideoSummarySection() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            viewModel.video.title,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          viewModel.video.title,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.thumb_up, color: Colors.white70),
+                SizedBox(width: 5),
+                Text(
+                  '123K',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                SizedBox(width: 20),
+                Icon(Icons.thumb_down, color: Colors.white70),
+                SizedBox(width: 5),
+                Text(
+                  '4K',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: 10),
-          Text(
-            viewModel.video.summary,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white70,
+            Row(
+              children: [
+                Icon(Icons.share, color: Colors.white70),
+                SizedBox(width: 5),
+                Text(
+                  'Share',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                SizedBox(width: 20),
+                Icon(Icons.download, color: Colors.white70),
+                SizedBox(width: 5),
+                Text(
+                  'Download',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                SizedBox(width: 20),
+                Icon(Icons.playlist_add, color: Colors.white70),
+                SizedBox(width: 5),
+                Text(
+                  'Save',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.thumb_up, color: Colors.white70),
-                  SizedBox(width: 5),
-                  Text(
-                    '123K',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  SizedBox(width: 20),
-                  Icon(Icons.thumb_down, color: Colors.white70),
-                  SizedBox(width: 5),
-                  Text(
-                    '4K',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Icon(Icons.share, color: Colors.white70),
-                  SizedBox(width: 5),
-                  Text(
-                    'Share',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  SizedBox(width: 20),
-                  Icon(Icons.download, color: Colors.white70),
-                  SizedBox(width: 5),
-                  Text(
-                    'Download',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  SizedBox(width: 20),
-                  Icon(Icons.playlist_add, color: Colors.white70),
-                  SizedBox(width: 5),
-                  Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+        SizedBox(height: 10),
+        VideoSummaryWidget(summary: viewModel.video.summary),
+        SizedBox(height: 10),
+      ],
+    ),
+  );
+}
+
+  
+
 
   Widget _buildVideoHighlightsSection(BuildContext context) {
     return Padding(
@@ -196,10 +195,10 @@ class MyHomePage extends StatelessWidget {
           Text(
             'Highlights',
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+              fontFamily: 'Pacifico', // Replace with your font family
+              fontSize: 24, // Adjust the size as needed
               color: Colors.white,
-            ),
+            )
           ),
           SizedBox(height: 10),
           _buildAnimatedVideoList(viewModel.videoHighlights),
@@ -217,10 +216,10 @@ class MyHomePage extends StatelessWidget {
           Text(
             'Related Videos',
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+              fontFamily: 'Pacifico', // Replace with your font family
+              fontSize: 24, // Adjust the size as needed
               color: Colors.white,
-            ),
+            )
           ),
           SizedBox(height: 10),
           _buildAnimatedVideoList(viewModel.similarVideos),
@@ -228,6 +227,8 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+
+  
 
   Widget _buildAnimatedVideoList(List<Video> videos) {
     return GridView.builder(

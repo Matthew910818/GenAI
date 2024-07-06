@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:genai_v2/viewmodel/video_vm.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:convert';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -93,6 +94,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _onTapDown(TapDownDetails details) {
+    print(VideoViewModel().allVideos);
     if (_isInitialized) {
       final RenderBox renderBox = context.findRenderObject() as RenderBox;
       final size = renderBox.size;

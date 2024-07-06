@@ -60,6 +60,11 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  fonts:
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/Pacifico-Regular.ttf
+
   # fonts:
   #     - family: Roboto
   #       fonts:
@@ -81,6 +86,7 @@ flutter:
      - assets/last.jpeg
      - assets/football.mp4
      - assets/track_stubs.json
+
     #  - assets/fonts/Roboto-Bold.ttf
     #  - assets/fonts/Roboto-Italic.ttf
     #  - assets/fonts/Roboto-Regular.ttf

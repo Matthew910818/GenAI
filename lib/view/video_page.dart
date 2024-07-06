@@ -47,13 +47,18 @@ class MyHomePage extends StatelessWidget {
         },
       ),
       centerTitle: true,
-      title: Text(
-        'Game',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Gelaito4',
+            style: TextStyle(
+              fontFamily: 'Pacifico', // Replace with your font family
+              fontSize: 24, // Adjust the size as needed
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       actions: [
         IconButton(
@@ -86,6 +91,8 @@ class MyHomePage extends StatelessWidget {
       ],
     );
   }
+
+
 
   Widget _buildVideoPlayerSection() {
     return Padding(
@@ -264,7 +271,7 @@ class MyHomePage extends StatelessWidget {
   Widget _buildHighlightCard(Video video) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFF2C2F33),
+        color: Colors.black,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
@@ -307,7 +314,7 @@ class MyHomePage extends StatelessWidget {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage('assets/channel_icon.png'),
+                  backgroundImage: AssetImage('channel_icon.png'),
                 ),
                 SizedBox(width: 8),
                 Expanded(

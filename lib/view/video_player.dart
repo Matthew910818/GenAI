@@ -92,6 +92,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void _onTapDown(TapDownDetails details) {
     if (_isInitialized) {
       final RenderBox renderBox = context.findRenderObject() as RenderBox;
+      final size = renderBox.size;
+      print("Video width: ${size.width}, height: ${size.height}");
       final position = renderBox.globalToLocal(details.globalPosition);
       final videoPosition = _controller.value.position;
       final frameNumber = (videoPosition.inMilliseconds / (1000 / frameRate)).round();

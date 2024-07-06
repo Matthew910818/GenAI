@@ -3,6 +3,7 @@ import 'package:video_player/video_player.dart';
 import 'dart:convert';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'dart:async';
+import 'package:flutter/services.dart' show rootBundle;
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoPath;
@@ -35,6 +36,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           setState(() {
             _isInitialized = true;
             _controller.play();
+            print("Video initialized and playing");
           });
         }
       }).catchError((error) {
@@ -44,6 +46,21 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _controller.addListener(() {
       setState(() {});
     });
+
+    _loadTracks();
+  }
+
+  Future<void> _loadTracks() async {
+    try {
+      final String response = await rootBundle.loadString('track_stubs.json');
+      final data = json.decode(response);
+      setState(() {
+        _tracks = data;
+        print("Tracks loaded successfully");
+      });
+    } catch (e) {
+      print("Error loading tracks: $e");
+    }
   }
 
   @override
@@ -64,36 +81,58 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         _tapPosition = position;
       });
 
+      print("Tapped at position: $position, frame number: $frameNumber");
       _findPlayerInfo(frameNumber, position);
     }
   }
 
   void _findPlayerInfo(int frameNumber, Offset position) {
-    if (frameNumber < 0 || frameNumber >= _tracks['players'].length) {
+    if (_tracks.isEmpty) {
       setState(() {
-        _playerInfoText = 'Player not found';
+        _playerInfoText = 'Tracks data is not properly initialized';
       });
+      print("Tracks data is not properly initialized");
+      return;
+    }
+
+    final frameKey = frameNumber.toString();
+    if (!_tracks.containsKey(frameKey)) {
+      setState(() {
+        _playerInfoText = 'Frame number out of range';
+      });
+      print("Frame number $frameNumber out of range");
+      return;
+    }
+
+    final frameData = _tracks[frameKey];
+    if (frameData == null) {
+      setState(() {
+        _playerInfoText = 'Frame data is null';
+      });
+      print("Frame data for frame number $frameNumber is null");
       return;
     }
 
     final x = position.dx;
     final y = position.dy;
 
-    for (var playerId in _tracks['players'][frameNumber].keys) {
-      final player = _tracks['players'][frameNumber][playerId];
+    for (var playerId in frameData.keys) {
+      final player = frameData[playerId];
       final bbox = player['bbox'];
       final x1 = bbox[0];
       final y1 = bbox[1];
       final x2 = bbox[2];
       final y2 = bbox[3];
+      print('$x1 , $y1 , $x2 , $y2 , $x , $y');
 
       if (x1 <= x && x <= x2 && y1 <= y && y <= y2) {
         setState(() {
-          _playerInfoText = 'Player Info: ${player.toString()}';
+          _playerInfoText = 'Player Info: Jersey ${player['jersey_number']}';
           _playerId = playerId;
           _remainingFrames = 20;
         });
-        _startTracking();
+        print("Player found: $_playerInfoText");
+    //   _startTracking();
         return;
       }
     }
@@ -102,6 +141,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       _playerInfoText = 'Player not found';
       _playerId = null;
     });
+    print("Player not found at tapped position $position in frame number $frameNumber");
   }
 
   void _startTracking() {
@@ -112,31 +152,41 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         final frameNumber = (videoPosition.inMilliseconds / (1000 / frameRate)).round();
         _updatePlayerPosition(frameNumber);
         _remainingFrames--;
+        print("Updating player position for frame number: $frameNumber");
       } else {
         _timer?.cancel();
+        print("Stopped tracking player");
       }
     });
   }
 
   void _updatePlayerPosition(int frameNumber) {
-    if (frameNumber < 0 || frameNumber >= _tracks['players'].length || _playerId == null) {
+    if (_tracks == null || _tracks.isEmpty || _playerId == null) {
       return;
     }
 
-    final player = _tracks['players'][frameNumber][_playerId];
-    if (player != null) {
-      final bbox = player['bbox'];
-      final x1 = bbox[0];
-      final y1 = bbox[1];
-      final x2 = bbox[2];
-      final y2 = bbox[3];
-      final centerX = (x1 + x2) / 2;
-      final centerY = (y1 + y2) / 2;
-
-      setState(() {
-        _tapPosition = Offset(centerX, centerY);
-      });
+    final frameKey = frameNumber.toString();
+    if (!_tracks.containsKey(frameKey)) {
+      return;
     }
+
+    final frameData = _tracks[frameKey];
+    if (frameData == null || !frameData.containsKey(_playerId)) {
+      return;
+    }
+
+    final player = frameData[_playerId];
+    final bbox = player['bbox'];
+    final x1 = bbox[0];
+    final y1 = bbox[1];
+    final x2 = bbox[2];
+    final y2 = bbox[3];
+    final centerX = (x1 + x2) / 2;
+    final centerY = (y1 + y2) / 2;
+
+    setState(() {
+      _tapPosition = Offset(centerX, centerY);
+    });
   }
 
   void _togglePlayPause() {
@@ -146,17 +196,20 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       } else {
         _controller.play();
       }
+      print("Play/pause toggled");
     });
   }
 
   void _seekToPosition(Duration position) {
     _controller.seekTo(position);
+    print("Seek to position: $position");
   }
 
   void _toggleMute() {
     setState(() {
       _isMuted = !_isMuted;
       _controller.setVolume(_isMuted ? 0.0 : 1.0);
+      print("Mute toggled: $_isMuted");
     });
   }
 
@@ -168,6 +221,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         setState(() {
           _areControlsVisible = visibilityInfo.visibleFraction > 0.5;
         });
+        print("Visibility changed: ${visibilityInfo.visibleFraction}");
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),

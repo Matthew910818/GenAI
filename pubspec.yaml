@@ -78,8 +78,8 @@ flutter:
      - assets/dunk.png
      - assets/crossover.png
      - assets/last.jpeg
-     - assets/football5_3.mov
-     - football_analysis/output_videos/football.mp4
+     - assets/football.mp4
+     - assets/track_stubs.json
     #  - assets/fonts/Roboto-Bold.ttf
     #  - assets/fonts/Roboto-Italic.ttf
     #  - assets/fonts/Roboto-Regular.ttf

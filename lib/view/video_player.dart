@@ -7,8 +7,9 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoPath;
+  final bool isActive; // Flag to indicate if the video should play
 
-  VideoPlayerWidget({required this.videoPath});
+  VideoPlayerWidget({required this.videoPath, this.isActive = false});
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -35,8 +36,13 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         if (mounted) {
           setState(() {
             _isInitialized = true;
-            _controller.play();
-            print("Video initialized and playing");
+            // Automatically play if the video is active
+            if (widget.isActive) {
+              _controller.play();
+            } else {
+              // Seek to frame 50 assuming 30 fps
+              _controller.seekTo(Duration(seconds: (50 / 30).floor()));
+            }
           });
         }
       }).catchError((error) {
@@ -64,6 +70,19 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   @override
+  void didUpdateWidget(VideoPlayerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive != oldWidget.isActive) {
+      if (widget.isActive) {
+        _controller.play();
+      } else {
+        _controller.pause();
+        _controller.seekTo(Duration(seconds: (50 / 30).floor()));
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _timer?.cancel();
     _controller.dispose();
@@ -87,63 +106,63 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _findPlayerInfo(int frameNumber, Offset position) async {
-  // 加載跟蹤數據
-  if (_tracks.isEmpty) {
-    setState(() {
-      _playerInfoText = 'Tracks data is not properly initialized';
-    });
-    print("Tracks data is not properly initialized");
-    return;
-  }
-
-  // 檢查框架號是否在範圍內
-  if (frameNumber < 0 || frameNumber >= _tracks.length) {
-    setState(() {
-      _playerInfoText = 'Frame number out of range';
-    });
-    print("Frame number $frameNumber out of range");
-    return;
-  }
-
-  // 獲取位置
-  final x = position.dx;
-  final y = position.dy;
-
-  // 檢查在該框架號中的每個球員
-  for (var playerId in _tracks[frameNumber.toString()].keys) {
-    final player = _tracks[frameNumber.toString()][playerId];
-    final bbox = player['bbox'];
-    final x1 = bbox[0];
-    final y1 = bbox[1];
-    final x2 = bbox[2];
-    final y2 = bbox[3];
-
-    print('$x1 , $y1 , $x2 , $y2 , $x , $y');
-
-    if (x1 <= x && x <= x2 && y1 <= y && y <= y2) {
+    // 加載跟蹤數據
+    if (_tracks.isEmpty) {
       setState(() {
-        _playerInfoText = 'Player Info: Jersey ${player['jersey_number']}';
-        _playerId = playerId;
-        _remainingFrames = 20;
+        _playerInfoText = 'Tracks data is not properly initialized';
       });
-      print("Player found: $_playerInfoText");
-      // _startTracking();
+      print("Tracks data is not properly initialized");
       return;
     }
+
+    // 檢查框架號是否在範圍內
+    if (frameNumber < 0 || frameNumber >= _tracks.length) {
+      setState(() {
+        _playerInfoText = 'Frame number out of range';
+      });
+      print("Frame number $frameNumber out of range");
+      return;
+    }
+
+    // 獲取位置
+    final x = position.dx;
+    final y = position.dy;
+
+    // 檢查在該框架號中的每個球員
+    for (var playerId in _tracks[frameNumber.toString()].keys) {
+      final player = _tracks[frameNumber.toString()][playerId];
+      final bbox = player['bbox'];
+      final x1 = bbox[0];
+      final y1 = bbox[1];
+      final x2 = bbox[2];
+      final y2 = bbox[3];
+
+      print('$x1 , $y1 , $x2 , $y2 , $x , $y');
+
+      if (x1 <= x && x <= x2 && y1 <= y && y <= y2) {
+        setState(() {
+          _playerInfoText = 'Player Info: Jersey ${player['jersey_number']}';
+          _playerId = playerId;
+          _remainingFrames = 20;
+        });
+        print("Player found: $_playerInfoText");
+        // _startTracking();
+        return;
+      }
+    }
+
+    setState(() {
+      _playerInfoText = 'Player not found';
+      _playerId = null;
+    });
+    print("Player not found at tapped position $position in frame number $frameNumber");
+
+    setState(() {
+      _playerInfoText = 'Player not found';
+      _playerId = null;
+    });
+    print("Player not found at tapped position $position in frame number $frameNumber");
   }
-
-  setState(() {
-    _playerInfoText = 'Player not found';
-    _playerId = null;
-  });
-  print("Player not found at tapped position $position in frame number $frameNumber");
-
-  setState(() {
-    _playerInfoText = 'Player not found';
-    _playerId = null;
-  });
-  print("Player not found at tapped position $position in frame number $frameNumber");
-}
 
   void _startTracking() {
     _timer?.cancel();

@@ -1,4 +1,3 @@
-// my_home_page.dart
 import 'package:flutter/material.dart';
 import '../viewmodel/video_vm.dart';
 import '../model/video.dart';
@@ -19,17 +18,13 @@ class MyHomePage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            // Handle back button press
-            onTap: () {
-              Navigator.pop(context);
-            };
+            Navigator.pop(context);
           },
         ),
         centerTitle: true,
         title: Text(
           'Game',
           style: TextStyle(
-            // fontFamily: 'Roboto',
             fontSize: 35,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -78,7 +73,6 @@ class MyHomePage extends StatelessWidget {
           Text(
             'Summary',
             style: TextStyle(
-              // fontFamily: 'Roboto',
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -88,7 +82,6 @@ class MyHomePage extends StatelessWidget {
           Text(
             viewModel.video.summary,
             style: TextStyle(
-              // fontFamily: 'Roboto',
               fontSize: 16,
               color: Colors.white70,
             ),
@@ -104,40 +97,40 @@ class MyHomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Highlights',
-                style: TextStyle(
-                  // fontFamily: 'Roboto',
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-             
-            ],
+          Text(
+            'Highlights',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           SizedBox(height: 10),
-          Container(
-            height: 180,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: viewModel.videoHighlights.length,
-              itemBuilder: (context, index) {
-                final highlight = viewModel.videoHighlights[index];
-                return GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => HighlightModal(highlight: highlight, startTime: Duration.zero),
-                    );
-                  },
-                  child: _buildHighlightCard(highlight),
-                );
-              },
+          GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 16 / 9,
             ),
+            itemCount: viewModel.videoHighlights.length,
+            itemBuilder: (context, index) {
+              final highlight = viewModel.videoHighlights[index];
+              return GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => HighlightModal(
+                      highlight: highlight,
+                      startTime: Duration.zero,
+                    ),
+                  );
+                },
+                child: _buildHighlightCard(highlight),
+              );
+            },
           ),
         ],
       ),
@@ -150,40 +143,40 @@ class MyHomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Related Videos',
-                style: TextStyle(
-                  // fontFamily: 'Roboto',
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              
-            ],
+          Text(
+            'Related Videos',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           SizedBox(height: 10),
-          Container(
-            height: 180,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: viewModel.similarVideos.length,
-              itemBuilder: (context, index) {
-                final video = viewModel.similarVideos[index];
-                return GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => HighlightModal(highlight: video, startTime: Duration.zero),
-                    );
-                  },
-                  child: _buildHighlightCard(video),
-                );
-              },
+          GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 16 / 9,
             ),
+            itemCount: viewModel.similarVideos.length,
+            itemBuilder: (context, index) {
+              final video = viewModel.similarVideos[index];
+              return GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => HighlightModal(
+                      highlight: video,
+                      startTime: Duration.zero,
+                    ),
+                  );
+                },
+                child: _buildHighlightCard(video),
+              );
+            },
           ),
         ],
       ),
@@ -192,49 +185,55 @@ class MyHomePage extends StatelessWidget {
 
   Widget _buildHighlightCard(Video video) {
     return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: Color(0xFF2C2F33), // Dark background color for the cards
+        color: Color(0xFF2C2F33),
         borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black54,
+            blurRadius: 5,
+            offset: Offset(0, 5),
+          ),
+        ],
       ),
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.asset(
-            video.imagePath,
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+            child: Image.asset(
+              video.imagePath,
+              width: double.infinity,
+              height: 100,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        title: Text(
-          video.title,
-          style: TextStyle(
-            // fontFamily: 'Roboto',
-            fontSize: 16,
-            color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  video.title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 5),
+                Text(
+                  video.duration,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white54,
+                  ),
+                ),
+              ],
+            ),
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Text(
-          video.duration,
-          style: TextStyle(
-            // fontFamily: 'Roboto',
-            fontSize: 14,
-            color: Colors.white54,
-          ),
-        ),
-        trailing: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.green,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(Icons.play_arrow, color: Colors.white),
-        ),
+        ],
       ),
     );
   }

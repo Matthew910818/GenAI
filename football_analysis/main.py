@@ -24,7 +24,7 @@ tracker = Tracker('models/best.pt')
 
 tracks = tracker.get_object_tracks(video_frames,
                                     read_from_stub=True,
-                                    stub_path='stubs/track_stubs.pkl')
+                                    stub_path='stubs/track_stubs.json')
 
 # Get object positions 
 tracker.add_position_to_tracks(tracks)

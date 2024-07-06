@@ -1,6 +1,7 @@
 from ultralytics import YOLO
 import supervision as sv
 import pickle
+import json
 import os
 import numpy as np
 import pandas as pd
@@ -97,10 +98,12 @@ class Tracker:
                 if cls_id == cls_names_inv['ball']:
                     tracks["ball"][frame_num][1] = {"bbox":bbox}
 
-        if stub_path is not None:
-            with open(stub_path,'wb') as f:
-                pickle.dump(tracks,f)
-
+        # if stub_path is not None:
+        #     with open(stub_path,'wb') as f:
+        #         pickle.dump(tracks,f)
+        
+        
+        
         return tracks
     
     def draw_ellipse(self,frame,bbox,color,track_id=None):
@@ -183,7 +186,7 @@ class Tracker:
 
         return frame
 
-    def draw_annotations(self,video_frames, tracks, jersey_number_table):
+    def draw_annotations(self,video_frames, tracks, jersey_number_table, stub_path=None):
         output_video_frames= []
         for frame_num, frame in enumerate(video_frames):
             frame = frame.copy()
@@ -219,5 +222,14 @@ class Tracker:
             # frame = self.draw_team_ball_control(frame, frame_num, team_ball_control)
 
             output_video_frames.append(frame)
+        
+        if stub_path is not None:
+            tracker_players_dict = {}
+            for i, t in enumerate(tracks['players']):
+                data = {str(k):v for k, v in t.items()}
+                tracker_players_dict[str(i)] = data
+            with open(stub_path, 'w') as f:
+                json.dump(tracker_players_dict, f, indent=4)
+
 
         return output_video_frames

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:genai_v2/view/homepage.dart';
+import 'package:genai_v2/view/video_page.dart';
 import '../viewmodel/video_vm.dart';
 import '../model/video.dart';
 import '../view/video_player.dart';

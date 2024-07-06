@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:genai_v2/view/homepage.dart';
+import 'package:genai_v2/view/video_page.dart';
 import 'view/home.dart';
 
 

@@ -131,7 +131,7 @@ class MyHomePage extends StatelessWidget {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => HighlightModal(highlight: highlight),
+                      builder: (context) => HighlightModal(highlight: highlight, startTime: Duration.zero),
                     );
                   },
                   child: _buildHighlightCard(highlight),
@@ -177,7 +177,7 @@ class MyHomePage extends StatelessWidget {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => HighlightModal(highlight: video),
+                      builder: (context) => HighlightModal(highlight: video, startTime: Duration.zero),
                     );
                   },
                   child: _buildHighlightCard(video),

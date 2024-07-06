@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:genai_v2/view/home.dart';
 import '../viewmodel/video_vm.dart';
 import '../model/video.dart';
 import 'highlight.dart';
@@ -13,7 +14,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,14 +33,17 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.black,
       elevation: 0,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.white),
-        onPressed: () {
-       //   Navigator.pop(context);
+         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
         },
       ),
       centerTitle: true,
@@ -55,7 +59,10 @@ class MyHomePage extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.cast, color: Colors.white),
           onPressed: () {
-            // Handle cast button press
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
           },
         ),
         IconButton(

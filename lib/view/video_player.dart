@@ -88,7 +88,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   void _findPlayerInfo(int frameNumber, Offset position) async {
   // 加載跟蹤數據
-
   if (_tracks.isEmpty) {
     setState(() {
       _playerInfoText = 'Tracks data is not properly initialized';
@@ -132,6 +131,12 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       return;
     }
   }
+
+  setState(() {
+    _playerInfoText = 'Player not found';
+    _playerId = null;
+  });
+  print("Player not found at tapped position $position in frame number $frameNumber");
 
   setState(() {
     _playerInfoText = 'Player not found';

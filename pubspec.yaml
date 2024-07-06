@@ -41,6 +41,7 @@ dependencies:
   video_thumbnail: ^0.5.0
   firebase_core: ^3.1.1
   http: ^0.13.3
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,7 @@ flutter:
      - assets/crossover.png
      - assets/last.jpeg
      - assets/football5_3.mov
+     - football_analysis/output_videos/football.mp4
     #  - assets/fonts/Roboto-Bold.ttf
     #  - assets/fonts/Roboto-Italic.ttf
     #  - assets/fonts/Roboto-Regular.ttf

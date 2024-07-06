@@ -104,7 +104,7 @@ class VideoRepository {
       title: 'Main Video',
       imagePath: 'assets/crossover.png',
       duration: '10:00',
-      videoPath: 'assets/football5_3.movmp4',
+      videoPath: 'football_analysis/output_videos/football.mp4',
       summary: 'This is a sample summary of the main video.',
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:genai_v2/view/homepage.dart';
 import 'view/home.dart';
 
 
@@ -14,8 +15,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      //home: MyHomePage(), // 改
-      home: HomePage(),
+      home: MyHomePage(), // 改
+      //home: HomePage(),
     );
   }
 }

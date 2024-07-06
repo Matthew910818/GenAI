@@ -114,6 +114,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
       setState(() {
         _tapPosition = position;
+        _playerInfoText = null; // Reset player info text
       });
 
       print("Tapped at position: $position (scaled: $originalX, $originalY), frame number: $frameNumber");
@@ -122,7 +123,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _findPlayerInfo(int frameNumber, Offset position) async {
-    // 加載跟蹤數據
+    // Load tracking data
     if (_tracks.isEmpty) {
       setState(() {
         _playerInfoText = 'Tracks data is not properly initialized';
@@ -131,7 +132,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       return;
     }
 
-    // 檢查框架號是否在範圍內
+    // Check if frame number is within range
     if (frameNumber < 0 || frameNumber >= _tracks.length) {
       setState(() {
         _playerInfoText = 'Frame number out of range';
@@ -140,11 +141,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       return;
     }
 
-    // 獲取位置
+    // Get position
     final x = position.dx;
     final y = position.dy;
 
-    // 檢查在該框架號中的每個球員
+    // Check each player in the frame
     for (var playerId in _tracks[frameNumber.toString()].keys) {
       final player = _tracks[frameNumber.toString()][playerId];
       final bbox = player['bbox'];
@@ -159,10 +160,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         setState(() {
           _playerInfoText = 'Player Info: Jersey ${player['jersey_number']}';
           _playerId = playerId;
-          _remainingFrames = 20;
+          _remainingFrames = 100;
         });
         print("Player found: $_playerInfoText");
-        // _startTracking();
+        _startTracking(); // Start tracking the player
         return;
       }
     }
@@ -170,26 +171,27 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     setState(() {
       _playerInfoText = 'Player not found';
       _playerId = null;
+      _remainingFrames = 100;
     });
     print("Player not found at tapped position $position in frame number $frameNumber");
-
-    setState(() {
-      _playerInfoText = 'Player not found';
-      _playerId = null;
-    });
-    print("Player not found at tapped position $position in frame number $frameNumber");
+    _startTracking(); // Start tracking for player not found
   }
 
   void _startTracking() {
     _timer?.cancel();
     _timer = Timer.periodic(Duration(milliseconds: (1000 / frameRate).round()), (timer) {
-      if (_controller.value.isPlaying && _playerId != null && _remainingFrames > 0) {
+      if (_controller.value.isPlaying && _remainingFrames > 0) {
         final videoPosition = _controller.value.position;
         final frameNumber = (videoPosition.inMilliseconds / (1000 / frameRate)).round();
         _updatePlayerPosition(frameNumber);
         _remainingFrames--;
         print("Updating player position for frame number: $frameNumber");
       } else {
+        setState(() {
+          _playerInfoText = null;
+          _tapPosition = null;
+          _playerId = null;
+        });
         _timer?.cancel();
         print("Stopped tracking player");
       }
@@ -220,8 +222,16 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     final centerX = (x1 + x2) / 2;
     final centerY = (y1 + y2) / 2;
 
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final double scaleX = size.width / originalVideoWidth;
+    final double scaleY = size.height / originalVideoHeight;
+
+    final double renderX = centerX * scaleX;
+    final double renderY = centerY * scaleY;
+
     setState(() {
-      _tapPosition = Offset(centerX, centerY);
+      _tapPosition = Offset(renderX, renderY);
     });
   }
 

@@ -39,6 +39,8 @@ dependencies:
   video_player: ^2.9.1
   carousel_slider: ^4.2.1
   video_thumbnail: ^0.5.0
+  firebase_core: ^3.1.1
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:
@@ -75,7 +77,7 @@ flutter:
      - assets/dunk.png
      - assets/crossover.png
      - assets/last.jpeg
-     - assets/Finals.mp4
+     - assets/football5_3.mov
     #  - assets/fonts/Roboto-Bold.ttf
     #  - assets/fonts/Roboto-Italic.ttf
     #  - assets/fonts/Roboto-Regular.ttf

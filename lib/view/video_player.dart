@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoPath;
@@ -14,7 +16,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late VideoPlayerController _controller;
   bool _isInitialized = false;
   Offset? _tapPosition;
-  String? _frameNumberText;
+  String? _playerInfoText;
   double frameRate = 30.0; // Assuming the video frame rate is 30 FPS
   bool _isMuted = false;
 
@@ -58,11 +60,32 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
       setState(() {
         _tapPosition = position;
-        _frameNumberText = 'Frame: $frameNumber';
       });
 
-      print('Tapped position: $position');
-      print('Frame number: $frameNumber');
+      _sendFrameAndPosition(frameNumber, position);
+    }
+  }
+
+  Future<void> _sendFrameAndPosition(int frameNumber, Offset position) async {
+    final url = Uri.parse('https://us-central1-hackathon-428516.cloudfunctions.net/get_player');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'frame_num': frameNumber,
+        'point': [position.dx, position.dy],
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        _playerInfoText = 'Player Info: ${data.toString()}';
+      });
+    } else {
+      setState(() {
+        _playerInfoText = 'Player not found';
+      });
     }
   }
 
@@ -103,17 +126,17 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 : Center(
                     child: CircularProgressIndicator(),
                   ),
-            if (_tapPosition != null && _frameNumberText != null)
+            if (_tapPosition != null && _playerInfoText != null)
               Positioned(
                 left: _tapPosition!.dx - 50,
                 top: _tapPosition!.dy - 25, // Adjusted to center the box vertically
                 child: Container(
-                  width: 100,
+                  width: 200,
                   height: 50,
                   color: Colors.black54,
                   child: Center(
                     child: Text(
-                      _frameNumberText!,
+                      _playerInfoText!,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

@@ -3,13 +3,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:genai_v2/view/video_page.dart';
 import '../viewmodel/video_vm.dart';
 import '../model/video.dart';
-import 'video_player.dart'; // Ensure this import points to your updated video player widget
+import '../view/video_player.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
-
   @override
   _HomePageState createState() => _HomePageState();
+  HomePage({super.key});
 }
 
 class _HomePageState extends State<HomePage> {
@@ -17,6 +16,7 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = true;
   int _current = 0;
   List<String> videoPaths = [];
+  late List<VideoPlayerWidget> _videoWidgets;
 
   @override
   void initState() {
@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
     await viewModel.loadVideos();
     setState(() {
       videoPaths = viewModel.videoHighlights.map((video) => video.videoPath).toList();
+      _videoWidgets = videoPaths.map((path) => VideoPlayerWidget(videoPath: path)).toList();
       isLoading = false;
     });
   }
@@ -40,7 +41,14 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color.fromARGB(255, 35, 30, 30),
         elevation: 20,
         centerTitle: true,
-        title: Text('愛爾達', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.white)),
+        title: Text(
+          '愛爾達',
+          style: TextStyle(
+            fontSize: 35,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -50,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: <Widget>[
                       CarouselSlider.builder(
-                        itemCount: videoPaths.length,
+                        itemCount: _videoWidgets.length,
                         options: CarouselOptions(
                           autoPlay: false,
                           aspectRatio: 2.0,
@@ -67,10 +75,12 @@ class _HomePageState extends State<HomePage> {
                             child: Center(
                               child: AspectRatio(
                                 aspectRatio: 16 / 9,
-                                child: VideoPlayerWidget(
-                                  videoPath: videoPaths[index],
-                                  isActive: index == _current,
-                                ),
+                                child: index == _current
+                                    ? _videoWidgets[index]
+                                    : Image.asset(
+                                        'assets/crossover.png', // Add a placeholder image
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                           );

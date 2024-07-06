@@ -17,10 +17,10 @@ jersey_number_table = {
 }
 
 # Read Video
-video_frames = read_video('/home/shen/Documents/ELTA_Contest/football_analysis/input_videos/football5_3.mp4')
+video_frames = read_video('/home/shen/Documents/ELTA_Contest/football_analysis/input_videos/game2/clip_1.mp4')
 
 # Initialize Tracker
-tracker = Tracker('models/best.pt')
+tracker = Tracker('/home/shen/Documents/ELTA_Contest/best.pt')
 
 tracks = tracker.get_object_tracks(video_frames,
                                     read_from_stub=True,
@@ -46,7 +46,7 @@ for frame_num, player_track in enumerate(tracks['players']):
 output_video_frames = tracker.draw_annotations(video_frames, tracks, jersey_number_table)
 
 # Save video
-save_video(output_video_frames, 'output_videos/football.avi')
+save_video(output_video_frames, '/home/shen/Documents/ELTA_Contest/football_analysis/output_videos/football.avi')
 # Convert the saved video to mp4 using ffmpeg
-os.system("ffmpeg -y -i output_videos/football.avi output_videos/football.mp4")
+os.system("ffmpeg -y -i /home/shen/Documents/ELTA_Contest/football_analysis/output_videos/football.avi /home/shen/Documents/ELTA_Contest/football_analysis/output_videos/game2/clip_1.mp4")
 

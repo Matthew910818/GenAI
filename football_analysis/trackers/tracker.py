@@ -13,7 +13,10 @@ from utils import get_center_of_bbox, get_bbox_width, get_foot_position
 class Tracker:
     def __init__(self, model_path):
         self.model = YOLO(model_path) 
-        self.tracker = sv.ByteTrack()
+        self.tracker = sv.ByteTrack(lost_track_buffer=50,
+                                    frame_rate=60,
+                                    minimum_consecutive_frames=1,
+                                    track_activation_threshold=0.7)
 
     def add_position_to_tracks(sekf,tracks):
         for object, object_tracks in tracks.items():
@@ -199,13 +202,17 @@ class Tracker:
             player_dict = tracks["players"][frame_num]
             ball_dict = tracks["ball"][frame_num]
             referee_dict = tracks["referees"][frame_num]
-
+            # print(player_dict)
             # Draw Players
             for track_id, player in player_dict.items():
+                # print(track_id)
                 color = player.get("team_color",(0,0,255))
-                track_id = int(jersey_number_table.get(track_id,track_id))
+                # track_id = int(jersey_number_table.get(track_id,track_id))
+                jersey_number = jersey_number_table.get(str(track_id),"N")
                 frame = self.draw_ellipse(frame, player["bbox"],color, track_id)
-                player['jersey_number'] = track_id
+                player['track_id'] = str(track_id)
+                player['jersey_number'] = jersey_number if jersey_number != "N" else None
+                # print(track_id)
                 if player.get('has_ball',False):
                     frame = self.draw_traingle(frame, player["bbox"],(0,0,255))
 
@@ -226,10 +233,10 @@ class Tracker:
         if stub_path is not None:
             tracker_players_dict = {}
             for i, t in enumerate(tracks['players']):
-                data = {str(k):v for k, v in t.items()}
+                data = {v['jersey_number']:v for k, v in t.items() if v.get('jersey_number') is not None}
                 tracker_players_dict[str(i)] = data
             with open(stub_path, 'w') as f:
                 json.dump(tracker_players_dict, f, indent=4)
 
 
-        return output_video_frames
+        return output_video_frames 

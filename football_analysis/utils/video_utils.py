@@ -1,13 +1,19 @@
 import cv2
+from moviepy.editor import VideoFileClip
+
+# def read_video(video_path):
+#     cap = cv2.VideoCapture(video_path)
+#     frames = []
+#     while True:
+#         ret, frame = cap.read()
+#         if not ret:
+#             break
+#         frames.append(frame)
+#     return frames
 
 def read_video(video_path):
-    cap = cv2.VideoCapture(video_path)
-    frames = []
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-        frames.append(frame)
+    clip = VideoFileClip(video_path)
+    frames = [frame for frame in clip.iter_frames()]
     return frames
 
 def save_video(ouput_video_frames,output_video_path):

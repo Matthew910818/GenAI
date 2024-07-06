@@ -17,7 +17,7 @@ jersey_number_table = {
 }
 
 # Read Video
-video_frames = read_video('/home/shen/Documents/ELTA_Contest/football_analysis/input_videos/football5_3.mov')
+video_frames = read_video('/home/shen/Documents/ELTA_Contest/football_analysis/input_videos/football5_3.mp4')
 
 # Initialize Tracker
 tracker = Tracker('models/best.pt')

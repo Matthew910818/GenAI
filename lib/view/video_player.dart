@@ -180,20 +180,24 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void _startTracking() {
     _timer?.cancel();
     _timer = Timer.periodic(Duration(milliseconds: (1000 / frameRate).round()), (timer) {
-      if (_controller.value.isPlaying && _remainingFrames > 0) {
-        final videoPosition = _controller.value.position;
-        final frameNumber = (videoPosition.inMilliseconds / (1000 / frameRate)).round();
-        _updatePlayerPosition(frameNumber);
-        _remainingFrames--;
-        print("Updating player position for frame number: $frameNumber");
+      if (_controller.value.isPlaying) {
+        if (_remainingFrames > 0) {
+          final videoPosition = _controller.value.position;
+          final frameNumber = (videoPosition.inMilliseconds / (1000 / frameRate)).round();
+          _updatePlayerPosition(frameNumber);
+          _remainingFrames--;
+          print("Updating player position for frame number: $frameNumber");
+        } else {
+          setState(() {
+            _playerInfoText = null;
+            _tapPosition = null;
+            _playerId = null;
+          });
+          _timer?.cancel();
+          print("Stopped tracking player");
+        }
       } else {
-        setState(() {
-          _playerInfoText = null;
-          _tapPosition = null;
-          _playerId = null;
-        });
         _timer?.cancel();
-        print("Stopped tracking player");
       }
     });
   }
@@ -241,6 +245,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         _controller.pause();
       } else {
         _controller.play();
+        _startTracking(); // Resume tracking when the video is played
       }
       print("Play/pause toggled");
     });

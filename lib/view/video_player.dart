@@ -28,6 +28,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   String? _playerId;
   int _remainingFrames = 0;
 
+  final double originalVideoWidth = 1612;
+  final double originalVideoHeight = 938;
+
   @override
   void initState() {
     super.initState();
@@ -93,8 +96,19 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     if (_isInitialized) {
       final RenderBox renderBox = context.findRenderObject() as RenderBox;
       final size = renderBox.size;
-      print("Video width: ${size.width}, height: ${size.height}");
+      print("Video render width: ${size.width}, height: ${size.height}");
+
+      // Calculate scale factors
+      final double scaleX = originalVideoWidth / size.width;
+      final double scaleY = originalVideoHeight / size.height;
+
+      // Get the tap position relative to the video
       final position = renderBox.globalToLocal(details.globalPosition);
+
+      // Scale the tap position to the original video coordinates
+      final double originalX = position.dx * scaleX;
+      final double originalY = position.dy * scaleY;
+
       final videoPosition = _controller.value.position;
       final frameNumber = (videoPosition.inMilliseconds / (1000 / frameRate)).round();
 
@@ -102,8 +116,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         _tapPosition = position;
       });
 
-      print("Tapped at position: $position, frame number: $frameNumber");
-      _findPlayerInfo(frameNumber, position);
+      print("Tapped at position: $position (scaled: $originalX, $originalY), frame number: $frameNumber");
+      _findPlayerInfo(frameNumber, Offset(originalX, originalY));
     }
   }
 

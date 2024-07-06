@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'dart:async';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoPath;
@@ -21,6 +21,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   String? _playerInfoText;
   double frameRate = 30.0;
   bool _isMuted = false;
+  late Map<String, dynamic> _tracks;
+  Timer? _timer;
+  String? _playerId;
+  int _remainingFrames = 0;
 
   @override
   void initState() {
@@ -44,6 +48,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   void dispose() {
+    _timer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -59,29 +64,77 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         _tapPosition = position;
       });
 
-      _sendFrameAndPosition(frameNumber, position);
+      _findPlayerInfo(frameNumber, position);
     }
   }
 
-  Future<void> _sendFrameAndPosition(int frameNumber, Offset position) async {
-    final url = Uri.parse('https://us-central1-hackathon-428516.cloudfunctions.net/get_player');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'frame_num': frameNumber,
-        'point': [position.dx, position.dy],
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      setState(() {
-        _playerInfoText = 'Player Info: ${data.toString()}';
-      });
-    } else {
+  void _findPlayerInfo(int frameNumber, Offset position) {
+    if (frameNumber < 0 || frameNumber >= _tracks['players'].length) {
       setState(() {
         _playerInfoText = 'Player not found';
+      });
+      return;
+    }
+
+    final x = position.dx;
+    final y = position.dy;
+
+    for (var playerId in _tracks['players'][frameNumber].keys) {
+      final player = _tracks['players'][frameNumber][playerId];
+      final bbox = player['bbox'];
+      final x1 = bbox[0];
+      final y1 = bbox[1];
+      final x2 = bbox[2];
+      final y2 = bbox[3];
+
+      if (x1 <= x && x <= x2 && y1 <= y && y <= y2) {
+        setState(() {
+          _playerInfoText = 'Player Info: ${player.toString()}';
+          _playerId = playerId;
+          _remainingFrames = 20;
+        });
+        _startTracking();
+        return;
+      }
+    }
+
+    setState(() {
+      _playerInfoText = 'Player not found';
+      _playerId = null;
+    });
+  }
+
+  void _startTracking() {
+    _timer?.cancel();
+    _timer = Timer.periodic(Duration(milliseconds: (1000 / frameRate).round()), (timer) {
+      if (_controller.value.isPlaying && _playerId != null && _remainingFrames > 0) {
+        final videoPosition = _controller.value.position;
+        final frameNumber = (videoPosition.inMilliseconds / (1000 / frameRate)).round();
+        _updatePlayerPosition(frameNumber);
+        _remainingFrames--;
+      } else {
+        _timer?.cancel();
+      }
+    });
+  }
+
+  void _updatePlayerPosition(int frameNumber) {
+    if (frameNumber < 0 || frameNumber >= _tracks['players'].length || _playerId == null) {
+      return;
+    }
+
+    final player = _tracks['players'][frameNumber][_playerId];
+    if (player != null) {
+      final bbox = player['bbox'];
+      final x1 = bbox[0];
+      final y1 = bbox[1];
+      final x2 = bbox[2];
+      final y2 = bbox[3];
+      final centerX = (x1 + x2) / 2;
+      final centerY = (y1 + y2) / 2;
+
+      setState(() {
+        _tapPosition = Offset(centerX, centerY);
       });
     }
   }

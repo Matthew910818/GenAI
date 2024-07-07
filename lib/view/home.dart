@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final viewModel = VideoViewModel();
+  final viewModel = VideoViewModel('Home');
   bool isLoading = true;
   int _current = 0;
   List<String> videoPaths = [];
@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-                child: Image.asset(
+                child: Image.network(
                   video.imagePath,
                   width: double.infinity,
                   height: 100,

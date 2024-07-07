@@ -7,30 +7,46 @@ import 'highlight.dart';
 import '../view/video_player.dart';
 import '../view/video_summary.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   MyHomePage({super.key});
-  final viewModel = VideoViewModel();
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final viewModel = VideoViewModel('Main Video');
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel.loadVideos().then((_) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildVideoPlayerSection(),
-            _buildVideoSummarySection(),
-            Divider(color: Colors.grey[800], thickness: 1),
-            _buildVideoHighlightsSection(context),
-            Divider(color: Colors.grey[800], thickness: 1),
-            _buildSimilarVideosSection(context),
-            Divider(color: Colors.grey[800], thickness: 1),
-            _buildCommentsSection(),
-          ],
-        ),
-      ),
+      body: viewModel.video == null
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildVideoPlayerSection(),
+                  _buildVideoSummarySection(),
+                  Divider(color: Colors.grey[800], thickness: 1),
+                  _buildVideoHighlightsSection(context),
+                  Divider(color: Colors.grey[800], thickness: 1),
+                  _buildSimilarVideosSection(context),
+                  Divider(color: Colors.grey[800], thickness: 1),
+                  _buildCommentsSection(),
+                ],
+              ),
+            ),
     );
   }
 
@@ -40,7 +56,7 @@ class MyHomePage extends StatelessWidget {
       elevation: 0,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.white),
-         onPressed: () {
+        onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
@@ -93,8 +109,6 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildVideoPlayerSection() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -115,76 +129,73 @@ class MyHomePage extends StatelessWidget {
   }
 
   Widget _buildVideoSummarySection() {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          viewModel.video.title,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+           '2016-17 UEFA 歐洲冠軍聯賽 3/9 巴塞隆納 vs 巴黎聖日耳曼',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
-        ),
-        SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.thumb_up, color: Colors.white70),
-                SizedBox(width: 5),
-                Text(
-                  '123K',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                SizedBox(width: 20),
-                Icon(Icons.thumb_down, color: Colors.white70),
-                SizedBox(width: 5),
-                Text(
-                  '4K',
-                  style: TextStyle(color: Colors.white70),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(Icons.share, color: Colors.white70),
-                SizedBox(width: 5),
-                Text(
-                  'Share',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                SizedBox(width: 20),
-                Icon(Icons.download, color: Colors.white70),
-                SizedBox(width: 5),
-                Text(
-                  'Download',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                SizedBox(width: 20),
-                Icon(Icons.playlist_add, color: Colors.white70),
-                SizedBox(width: 5),
-                Text(
-                  'Save',
-                  style: TextStyle(color: Colors.white70),
-                ),
-              ],
-            ),
-          ],
-        ),
-        SizedBox(height: 10),
-        VideoSummaryWidget(summary: viewModel.video.summary),
-        SizedBox(height: 10),
-      ],
-    ),
-  );
-}
-
-  
-
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.thumb_up, color: Colors.white70),
+                  SizedBox(width: 5),
+                  Text(
+                    '123K',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  SizedBox(width: 20),
+                  Icon(Icons.thumb_down, color: Colors.white70),
+                  SizedBox(width: 5),
+                  Text(
+                    '4K',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Icon(Icons.share, color: Colors.white70),
+                  SizedBox(width: 5),
+                  Text(
+                    'Share',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  SizedBox(width: 20),
+                  Icon(Icons.download, color: Colors.white70),
+                  SizedBox(width: 5),
+                  Text(
+                    'Download',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  SizedBox(width: 20),
+                  Icon(Icons.playlist_add, color: Colors.white70),
+                  SizedBox(width: 5),
+                  Text(
+                    'Save',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          VideoSummaryWidget(summary: viewModel.video.summary),
+          SizedBox(height: 10),
+        ],
+      ),
+    );
+  }
 
   Widget _buildVideoHighlightsSection(BuildContext context) {
     return Padding(
@@ -198,7 +209,7 @@ class MyHomePage extends StatelessWidget {
               fontFamily: 'Pacifico', // Replace with your font family
               fontSize: 24, // Adjust the size as needed
               color: Colors.white,
-            )
+            ),
           ),
           SizedBox(height: 10),
           _buildAnimatedVideoList(viewModel.videoHighlights),
@@ -219,7 +230,7 @@ class MyHomePage extends StatelessWidget {
               fontFamily: 'Pacifico', // Replace with your font family
               fontSize: 24, // Adjust the size as needed
               color: Colors.white,
-            )
+            ),
           ),
           SizedBox(height: 10),
           _buildAnimatedVideoList(viewModel.similarVideos),
@@ -227,8 +238,6 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
-
-  
 
   Widget _buildAnimatedVideoList(List<Video> videos) {
     return GridView.builder(
@@ -289,7 +298,7 @@ class MyHomePage extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-                child: Image.asset(
+                child: Image.network(
                   video.imagePath,
                   width: double.infinity,
                   height: 100,

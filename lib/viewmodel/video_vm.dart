@@ -4,12 +4,14 @@ import '../repository/video_repo.dart';
 class VideoViewModel {
   final VideoRepository _repository = VideoRepository();
   late Video video;
+  late String title; 
   late List<Video> videoHighlights;
   late List<Video> similarVideos;
   late List<Video> recommendedVideos;
   late Future<Map<String, List<Video>>> categorizedVideos; 
 
-  VideoViewModel() {
+  VideoViewModel(this.title) {
+    title = title ; 
     _loadVideo();
     _loadCategoryVideos();
     _loadVideoHighlights();
@@ -25,7 +27,7 @@ class VideoViewModel {
   Future<void> loadVideos() async {
     video = _repository.fetchVideo();
     videoHighlights = _repository.fetchVideoHighlights();
-    similarVideos = _repository.fetchSimilarVideos(video.title); // Pass the main video title
+    similarVideos = _repository.fetchSimilarVideos(title); // Pass the main video title
     recommendedVideos = _repository.fetchRecommendedVideos();
   }
 
@@ -38,7 +40,7 @@ class VideoViewModel {
   }
 
   void _loadSimilarVideos() {
-    similarVideos = _repository.fetchSimilarVideos(video.title); // Pass the main video title
+    similarVideos = _repository.fetchSimilarVideos(title); // Pass the main video title
   }
 
   void _loadRecommendedVideos() {

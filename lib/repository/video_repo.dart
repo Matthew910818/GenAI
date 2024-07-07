@@ -55,32 +55,75 @@ class VideoRepository {
     ];
   }
 
-  List<Video> fetchSimilarVideos(String mainVideoTitle) {
-    print("Similar video input string : ${mainVideoTitle}");
-    // Simulate fetching data from an external source
-    return [
-      Video(
-        title: 'Similar Video 1',
-        imagePath: 'assets/crossover.png',
-        duration: '02:00',
+  List<Video> fetchSimilarVideos(String videoTitle) {
+    print( 'Title : ${videoTitle}' ) ; 
+    final recommendlist = [
+      new Video(
+        title: '2016-17 UEFA 歐洲冠軍聯賽 5/3 皇家馬德里 vs 馬德里競技(四強)',
+        imagePath: 'https://i.ytimg.com/vi/0Wk4gd5rqgk/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAhW4lLiQEOgJYlTglnakYKNMLXcQ',
+        duration: '1:55:59',
         videoPath: 'assets/football.mp4',
-        summary: 'This is a summary for Similar Video 1',
+        summary: 'This is a summary'
       ),
-      Video(
-        title: 'Similar Video 2',
-        imagePath: 'assets/crossover.png',
-        duration: '01:30',
+      new Video(
+        title: '2016-17 歐洲冠軍聯賽 - 5/11 馬德里競技 VS 皇家馬德里 (四強賽次回)',
+        imagePath: 'https://i.ytimg.com/vi/jKDIfVZO414/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDL_uHY1auPGjmHr2uDHYa2W13KSg',
+        duration: '2:00:02',
         videoPath: 'assets/football.mp4',
-        summary: 'This is a summary for Similar Video 2',
+        summary: 'This is a summary'
       ),
-      Video(
-        title: 'Similar Video 3',
-        imagePath: 'assets/crossover.png',
-        duration: '03:00',
+      new Video(
+        title: '【17 18歐冠】0412 皇家馬德里 vs  尤文圖斯 精彩花絮',
+        imagePath: 'https://i.ytimg.com/vi/agzuw04u54U/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDsXeGczJD82UitwRV00jGgjvxIUA',
+        duration: '2:55',
         videoPath: 'assets/football.mp4',
-        summary: 'This is a summary for Similar Video 3',
+        summary: 'This is a summary'
       ),
+      new Video(
+        title: '2016-17 歐洲冠軍聯賽 - 5/10 尤文圖斯 VS 摩納哥 (四強賽次回)',
+        imagePath: 'https://i.ytimg.com/vi/ehGG16wurRg/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLD2UZXANEpVQlhe3n9hRkEufSGK0g',
+        duration: '1:59:09',
+        videoPath: 'assets/football.mp4',
+        summary: 'This is a summary'
+      ),
+      new Video(
+        title: '2016-17 UEFA 歐洲冠軍聯賽 11/2 巴塞爾 VS 巴黎聖日耳曼',
+        imagePath: 'https://i.ytimg.com/vi/esIWws1N7kA/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBuVKKmfHLJiE1QU4jYG_gKHeDImQ',
+        duration: '1:46:19',
+        videoPath: 'assets/football.mp4',
+        summary: 'This is a summary'
+      ),
+      new Video(
+        title: '2016-17 UEFA 歐洲冠軍聯賽 09/14 巴黎聖日耳曼 VS 兵工廠',
+        imagePath: 'https://i.ytimg.com/vi/jf9P-2brqik/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCCz87AzXPEfoojJqUqIKB68yIIjA',
+        duration: '1:58:28',
+        videoPath: 'assets/football.mp4',
+        summary: 'This is a summary'
+      ),
+      new Video(
+        title: '2016-17 UEFA 歐洲冠軍聯賽 09/29 盧多格雷玆 vs 巴黎聖日耳曼',
+        imagePath: 'https://i.ytimg.com/vi/W6PooHxE0BQ/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDTBh_TbWGgXbjT7YUkcuqjFHr19Q',
+        duration: '1:48:00',
+        videoPath: 'assets/football.mp4',
+        summary: 'This is a summary'
+      ),
+      new Video(
+        title: '2016-17 UEFA歐洲冠軍聯賽 09/29 盧多格雷玆 vs 巴黎聖日耳曼',
+        imagePath: 'https://i.ytimg.com/vi/UrCYzBPsLPk/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCC8I0ZIsvvsqqiAbq4BM_6TPOMkQ',
+        duration: '1:48:00',
+        videoPath: 'assets/football.mp4',
+        summary: 'This is a summary'
+      )
     ];
+    if (videoTitle == "Home"){
+      return recommendlist.sublist(0,4);
+
+    }else if(videoTitle == "Full Video Title")
+    {
+      return recommendlist.sublist(4,8);
+    }
+    else return recommendlist.sublist(4,8);
+
   }
 
   List<Video> fetchRecommendedVideos() {
@@ -141,5 +184,7 @@ Juventus attempted to fight back, but their efforts were in vain. Instead, they 
 
 The match was full of intense confrontations and brilliant moments. Both the tactical arrangements and individual technical performances provided the audience with immense visual enjoyment. Despite the defeat, Juventus' fighting spirit was equally commendable. This match once again proved the charm and influence of the UEFA Champions League as the world's top football competition.""",
     );
+
+
   }
 }

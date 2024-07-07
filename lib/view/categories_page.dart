@@ -5,7 +5,7 @@ import 'package:genai_v2/viewmodel/video_vm.dart';
 
 class CategoriesPage extends StatelessWidget {
   CategoriesPage({super.key});
-  final viewModel = VideoViewModel(); // Ensure this is available
+  final viewModel = VideoViewModel('Categories'); // Ensure this is available
 
   @override
   Widget build(BuildContext context) {

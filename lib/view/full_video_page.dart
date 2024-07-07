@@ -9,27 +9,38 @@ import '../view/video_summary.dart';
 
 class FullVideoPage extends StatelessWidget {
   FullVideoPage({super.key});
-  final viewModel = VideoViewModel(); // Adjust as necessary to handle the video data
+  final viewModel = VideoViewModel('Full Video Title'); // Adjust as necessary to handle the video data
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildVideoPlayerSection(),
-            _buildVideoSummarySection(),
-            Divider(color: Colors.grey[800], thickness: 1),
-            _buildVideoHighlightsSection(context),
-            Divider(color: Colors.grey[800], thickness: 1),
-            _buildSimilarVideosSection(context),
-            Divider(color: Colors.grey[800], thickness: 1),
-            _buildCommentsSection(),
-          ],
-        ),
+      body: FutureBuilder<void>(
+        future: viewModel.loadVideos(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading videos'));
+          } else {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildVideoPlayerSection(),
+                  _buildVideoSummarySection(),
+                  Divider(color: Colors.grey[800], thickness: 1),
+                  _buildVideoHighlightsSection(context),
+                  Divider(color: Colors.grey[800], thickness: 1),
+                  _buildSimilarVideosSection(context),
+                  Divider(color: Colors.grey[800], thickness: 1),
+                  _buildCommentsSection(),
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -40,7 +51,7 @@ class FullVideoPage extends StatelessWidget {
       elevation: 0,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Colors.white),
-         onPressed: () {
+        onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
@@ -119,7 +130,7 @@ class FullVideoPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Full Video Title',
+            '2016-17 歐洲冠軍聯賽 - 6⧸4 皇家馬德里 VS 尤文圖斯 (冠軍賽)',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -282,7 +293,7 @@ class FullVideoPage extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-                child: Image.asset(
+                child: Image.network(
                   video.imagePath,
                   width: double.infinity,
                   height: 100,

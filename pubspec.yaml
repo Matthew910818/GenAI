@@ -89,6 +89,7 @@ flutter:
      - assets/football.mp4
      - assets/track_stubs.json
      - assets/channel_videos.json
+     - assets/categorized_videos.json
 
     #  - assets/fonts/Roboto-Bold.ttf
     #  - assets/fonts/Roboto-Italic.ttf

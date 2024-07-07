@@ -1,24 +1,32 @@
 // repository/video_repo.dart
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../model/video.dart';
 
 class VideoRepository {
-
-Future<List<Video>> parseVideos(String filePath) async {
+  Future<Map<String,List<Video>>> parseCategoryVideos(String filePath) async {
     try {
-      final file = File(filePath);
-      final jsonString = await file.readAsString();
-      final List<dynamic> jsonList = json.decode(jsonString);
+      final String response = await rootBundle.loadString(filePath);
+      final Map<String, dynamic> jsonMap = json.decode(response);
 
-      return jsonList.map<Video>((videoJson) => Video.fromJson(videoJson as Map<String, dynamic>)).toList();
+      Map<String,List<Video>> videos = {};
+      jsonMap["categories"].forEach((category, videoList) {
+        final List<Video> video_lis = [];
+        for (var videoJson in videoList) {
+          video_lis.add(Video.fromJson(videoJson));
+        }
+
+        videos[category] = video_lis ; 
+      });
+
+      return videos;
     } catch (e) {
       print('Error reading JSON file: $e');
-      return [];
+      return {};
     }
   }
-
 
 
   List<Video> fetchVideoHighlights() {

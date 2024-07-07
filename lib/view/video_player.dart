@@ -94,7 +94,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _onTapDown(TapDownDetails details) {
-    print(VideoViewModel().allVideos);
+   // print(VideoViewModel().allVideos);
     if (_isInitialized) {
       final RenderBox renderBox = context.findRenderObject() as RenderBox;
       final size = renderBox.size;

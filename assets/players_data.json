@@ -1,0 +1,100 @@
+[
+    {
+        "name": "Lionel Messi",
+        "age": 36,
+        "position": "Forward",
+        "average points": 5.6,
+        "shirt number": 10
+    },
+    {
+        "name": "Ivan Rakiti\u0107",
+        "age": 35,
+        "position": "Midfielder",
+        "average points": 3.8,
+        "shirt number": 4
+    },
+    {
+        "name": "Luis Su\u00e1rez",
+        "age": 36,
+        "position": "Forward",
+        "average points": 4.3,
+        "shirt number": 9
+    },
+    {
+        "name": "Andr\u00e9s Iniesta",
+        "age": 39,
+        "position": "Midfielder",
+        "average points": 4.2,
+        "shirt number": 8
+    },
+    {
+        "name": "Sergio Busquets",
+        "age": 35,
+        "position": "Midfielder",
+        "average points": 3.5,
+        "shirt number": 5
+    },
+    {
+        "name": "Neymar",
+        "age": 32,
+        "position": "Forward",
+        "average points": 4.8,
+        "shirt number": 11
+    },
+    {
+        "name": "Julian Draxler",
+        "age": 30,
+        "position": "Left Winger",
+        "average points": 3.4,
+        "shirt number": 23
+    },
+    {
+        "name": "Thiago Silva",
+        "age": 39,
+        "position": "Centre-Back",
+        "average points": 3.0,
+        "shirt number": 2
+    },
+    {
+        "name": "Marquinhos",
+        "age": 29,
+        "position": "Centre-Back",
+        "average points": 3.5,
+        "shirt number": 5
+    },
+    {
+        "name": "Layvin Kurzawa",
+        "age": 31,
+        "position": "Left-Back",
+        "average points": 2.5,
+        "shirt number": 20
+    },
+    {
+        "name": "Adrien Rabiot",
+        "age": 29,
+        "position": "Midfielder",
+        "average points": 3.5,
+        "shirt number": 25
+    },
+    {
+        "name": "Kevin Rimane",
+        "age": 33,
+        "position": "Defender",
+        "average points": 2.8,
+        "shirt number": 6
+    },
+    {
+        "name": "Thomas Meunier",
+        "age": 32,
+        "position": "Right-Back",
+        "average points": 3.2,
+        "shirt number": 12
+    },
+    {
+        "name": "Blaise Matuidi",
+        "age": 36,
+        "position": "Midfielder",
+        "average points": 3.2,
+        "shirt number": 14
+    }
+]

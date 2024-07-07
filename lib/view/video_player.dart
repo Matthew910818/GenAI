@@ -22,15 +22,15 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   bool _areControlsVisible = false; // To control visibility of the player controls
   Offset? _tapPosition;
   String? _playerInfoText;
-  double frameRate = 30.0;
+  double frameRate = 24.0;
   bool _isMuted = false;
   late Map<String, dynamic> _tracks;
   Timer? _timer;
   String? _playerId;
   int _remainingFrames = 0;
 
-  final double originalVideoWidth = 1612;
-  final double originalVideoHeight = 938;
+  final double originalVideoWidth = 1920;
+  final double originalVideoHeight = 1080;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               _controller.play();
             } else {
               // Seek to frame 50 assuming 30 fps
-              _controller.seekTo(Duration(seconds: (50 / 30).floor()));
+              _controller.seekTo(Duration(seconds: (50 / 24).floor()));
             }
           });
         }
@@ -81,7 +81,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         _controller.play();
       } else {
         _controller.pause();
-        _controller.seekTo(Duration(seconds: (50 / 30).floor()));
+        _controller.seekTo(Duration(seconds: (50 /24).floor()));
       }
     }
   }

@@ -5,13 +5,12 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import normalize
 import logging
 from tqdm import tqdm
-import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Replace with your OpenAI API key
-client = OpenAI(api_key='sk-proj-mlprUcgHXQILRMMrW7qZT3BlbkFJnR073C3X0wvVjz9XUqUS')
+client = OpenAI(api_key='sk-proj-iD5dvoDQRPADtqDXW0DYT3BlbkFJKMs8Ty2treeuDNiIMEhG')
 
 class Video:
     def __init__(self, title, imagePath, duration, videoPath, summary):
@@ -43,26 +42,18 @@ def parse_videos(json_list):
     logging.info(f"Parsed {len(videos)} videos from JSON")
     return videos
 
-def get_embeddings(text_list, batch_size=100, save_path="embeddings.json"):
+def get_embeddings(text_list, batch_size=100):
     embeddings = []
-    if os.path.exists(save_path):
-        with open(save_path, 'r') as f:
-            embeddings = json.load(f)
-        logging.info(f"Loaded embeddings from {save_path}")
-    else:
-        for i in tqdm(range(0, len(text_list), batch_size), desc="Processing Embeddings"):
-            batch = text_list[i:i + batch_size]
-            try:
-                response = client.embeddings.create(input=batch, model="text-embedding-ada-002")
-                batch_embeddings = [data['embedding'] for data in response['data']]
-                embeddings.extend(batch_embeddings)
-            except Exception as e:
-                logging.error(f"Error getting embeddings: {e}")
-                raise
-        logging.info(f"Received embeddings for {len(text_list)} texts")
-        with open(save_path, 'w') as f:
-            json.dump(embeddings, f)
-        logging.info(f"Saved embeddings to {save_path}")
+    for i in tqdm(range(0, len(text_list), batch_size), desc="Processing Embeddings"):
+        batch = text_list[i:i + batch_size]
+        try:
+            response = client.embeddings.create(input=batch, model="text-embedding-ada-002")
+            batch_embeddings = [data.embedding for data in response.data]
+            embeddings.extend(batch_embeddings)
+        except Exception as e:
+            logging.error(f"Error getting embeddings: {e}")
+            raise
+    logging.info(f"Received embeddings for {len(text_list)} texts")
     return np.array(embeddings)
 
 def cluster_videos(videos, num_clusters=5):
@@ -128,8 +119,7 @@ def main(input_file, output_file):
         logging.info(f"Loaded JSON from {input_file}")
         videos = parse_videos(json_list)
         labels = cluster_videos(videos)
-        num_clusters = len(set(labels))
-        cluster_names = name_clusters(videos, labels, num_clusters)
+        cluster_names = name_clusters(videos, labels,5)
         categorized_videos = categorize_videos(videos, labels, cluster_names)
         save_to_json(categorized_videos, output_file)
     except Exception as e:

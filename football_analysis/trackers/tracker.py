@@ -209,34 +209,37 @@ class Tracker:
                 color = player.get("team_color",(0,0,255))
                 # track_id = int(jersey_number_table.get(track_id,track_id))
                 jersey_number = jersey_number_table.get(str(track_id),"N")
-                frame = self.draw_ellipse(frame, player["bbox"],color, track_id)
+                # frame = self.draw_ellipse(frame, player["bbox"],color, track_id)
+                # frame = self.draw_ellipse(frame, player["bbox"],color)
                 player['track_id'] = str(track_id)
                 player['jersey_number'] = jersey_number if jersey_number != "N" else None
-                # print(track_id)
-                if player.get('has_ball',False):
-                    frame = self.draw_traingle(frame, player["bbox"],(0,0,255))
+            #     # print(track_id)
+            #     if player.get('has_ball',False):
+            #         frame = self.draw_traingle(frame, player["bbox"],(0,0,255))
 
-            # Draw Referee
-            for _, referee in referee_dict.items():
-                frame = self.draw_ellipse(frame, referee["bbox"],(0,255,255), "ref")
+            # # Draw Referee
+            # for _, referee in referee_dict.items():
+            #     frame = self.draw_ellipse(frame, referee["bbox"],(0,255,255), "ref")
             
-            # Draw ball 
-            for track_id, ball in ball_dict.items():
-                frame = self.draw_traingle(frame, ball["bbox"],(0,255,0))
+            # # Draw ball 
+            # for track_id, ball in ball_dict.items():
+            #     frame = self.draw_traingle(frame, ball["bbox"],(0,255,0))
 
 
             # # Draw Team Ball Control
             # frame = self.draw_team_ball_control(frame, frame_num, team_ball_control)
 
             output_video_frames.append(frame)
-        
-        if stub_path is not None:
-            tracker_players_dict = {}
-            for i, t in enumerate(tracks['players']):
-                data = {v['jersey_number']:v for k, v in t.items() if v.get('jersey_number') is not None}
-                tracker_players_dict[str(i)] = data
-            with open(stub_path, 'w') as f:
-                json.dump(tracker_players_dict, f, indent=4)
-
+            
+            # Save Video    
+            if stub_path is not None:
+                tracker_players_dict = {}
+                for i, t in enumerate(tracks['players']):
+                    data = {}
+                    for j, track in t.items():
+                        data[str(j)] = track
+                    tracker_players_dict[str(i)] = data
+                with open(stub_path, 'w') as f:
+                    json.dump(tracker_players_dict, f, indent=4)
 
         return output_video_frames 

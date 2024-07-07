@@ -10,7 +10,7 @@ from tqdm import tqdm
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Replace with your OpenAI API key
-client = OpenAI(api_key='sk-proj-iD5dvoDQRPADtqDXW0DYT3BlbkFJKMs8Ty2treeuDNiIMEhG')
+client = OpenAI(api_key='sk-proj-X8IJ3wurQIbIdRXu3IR2T3BlbkFJvSBLYJ3ixcK5pD8WYquj')
 
 class Video:
     def __init__(self, title, imagePath, duration, videoPath, summary):
@@ -68,13 +68,14 @@ def cluster_videos(videos, num_clusters=5):
 def generate_category_names(cluster_texts):
     category_names = []
     for texts in cluster_texts:
-        prompt = "Generate a category name for the following list of video titles and descriptions:\n\n"
-        prompt += "\n".join(texts) + "\n\nCategory name:"
+        prompt = "Check the below titles and descriptions , Generate a good category name that covers the list of video titles and descriptions:\n\n"
+        prompt += "\n".join(texts)
+        print(prompt)
         try:
             response = client.Completion.create(
                 model="gpt-4",
                 prompt=prompt,
-                max_tokens=10
+                max_tokens=100
             )
             category_name = response.choices[0].text.strip()
             category_names.append(category_name)
